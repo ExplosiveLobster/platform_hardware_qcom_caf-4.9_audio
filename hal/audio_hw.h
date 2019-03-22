@@ -146,6 +146,7 @@ enum {
     USECASE_AUDIO_PLAYBACK_OFFLOAD9,
     USECASE_AUDIO_PLAYBACK_ULL,
     USECASE_AUDIO_PLAYBACK_MMAP,
+    USECASE_AUDIO_PLAYBACK_WITH_HAPTICS,
     USECASE_AUDIO_PLAYBACK_HIFI,
     USECASE_AUDIO_PLAYBACK_TTS,
 
@@ -371,6 +372,7 @@ struct stream_out {
     mix_matrix_params_t pan_scale_params;
     mix_matrix_params_t downmix_params;
     bool set_dual_mono;
+    bool prev_card_status_offline;
 
     error_log_t *error_log;
 };
@@ -488,6 +490,7 @@ typedef void (*adm_on_routing_change_t)(void *, audio_io_handle_t);
 struct audio_device {
     struct audio_hw_device device;
     pthread_mutex_t lock; /* see note below on mutex acquisition order */
+    pthread_mutex_t cal_lock;
     struct mixer *mixer;
     audio_mode_t mode;
     audio_devices_t out_device;
@@ -569,6 +572,12 @@ struct audio_device {
     unsigned int interactive_usecase_state;
     bool dp_allowed_for_voice;
     void *ext_hw_plugin;
+
+    struct pcm_config haptics_config;
+    struct pcm *haptic_pcm;
+    int    haptic_pcm_device_id;
+    uint8_t *haptic_buffer;
+    size_t haptic_buffer_size;
 
     /* logging */
     snd_device_t last_logged_snd_device[AUDIO_USECASE_MAX][2]; /* [out, in] */

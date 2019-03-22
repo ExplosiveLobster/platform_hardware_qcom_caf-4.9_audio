@@ -228,7 +228,7 @@ typedef struct spkr_prot_init_config spkr_prot_init_config_t;
 
 // call at adev init
 void audio_extn_init(struct audio_device *adev);
-void audio_extn_feature_init();
+void audio_extn_feature_init(int is_running_with_enhanced_fwk);
 //START: SND_MONITOR_FEATURE ===========================================
 void snd_mon_feature_init (bool is_feature_enabled);
 typedef void (* snd_mon_cb)(void * stream, struct str_parms * parms);
@@ -877,7 +877,7 @@ int audio_extn_keep_alive_set_parameters(struct audio_device *adev,
 #ifndef AUDIO_GENERIC_EFFECT_FRAMEWORK_ENABLED
 
 #define audio_extn_gef_init(adev) (0)
-#define audio_extn_gef_deinit() (0)
+#define audio_extn_gef_deinit(adev) (0)
 #define audio_extn_gef_notify_device_config(devices, cmask, sample_rate, acdb_id) (0)
 
 #ifndef INSTANCE_ID_ENABLED
@@ -907,7 +907,7 @@ int audio_extn_keep_alive_set_parameters(struct audio_device *adev,
 #else
 
 void audio_extn_gef_init(struct audio_device *adev);
-void audio_extn_gef_deinit();
+void audio_extn_gef_deinit(struct audio_device *adev);
 
 void audio_extn_gef_notify_device_config(audio_devices_t audio_device,
     audio_channel_mask_t channel_mask, int sample_rate, int acdb_id);
@@ -1145,6 +1145,18 @@ void audio_extn_ffv_append_ec_ref_dev_name(char *device_name);
 #endif
 
 int audio_extn_utils_get_license_params(const struct audio_device *adev,  struct audio_license_params *lic_params);
+
+#ifndef AUDIO_EXTN_AUTO_HAL_ENABLED
+#define audio_extn_auto_hal_init(adev)                (0)
+#define audio_extn_auto_hal_deinit()                  (0)
+#define audio_extn_auto_hal_enable_hostless()         (0)
+#define audio_extn_auto_hal_disable_hostless()        (0)
+#else
+int32_t audio_extn_auto_hal_init(struct audio_device *adev);
+void audio_extn_auto_hal_deinit(void);
+int32_t audio_extn_auto_hal_enable_hostless(void);
+void audio_extn_auto_hal_disable_hostless(void);
+#endif
 
 #ifndef EXT_HW_PLUGIN_ENABLED
 #define audio_extn_ext_hw_plugin_init(adev)                (0)

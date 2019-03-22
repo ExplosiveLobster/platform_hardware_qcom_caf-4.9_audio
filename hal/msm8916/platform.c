@@ -5848,7 +5848,10 @@ static int platform_get_voice_call_backend(struct audio_device* adev)
    if (voice_is_in_call(adev) || adev->mode == AUDIO_MODE_IN_COMMUNICATION) {
        list_for_each(node, &adev->usecase_list) {
            uc =  node_to_item(node, struct audio_usecase, list);
-           if (uc && (uc->type == VOICE_CALL || uc->type == VOIP_CALL) && uc->stream.out) {
+           if (uc && uc->stream.out &&
+               (uc->type == VOICE_CALL ||
+                uc->type == VOIP_CALL ||
+                uc->id == USECASE_AUDIO_PLAYBACK_VOIP)) {
                out_snd_device = platform_get_output_snd_device(adev->platform, uc->stream.out);
                backend_idx = platform_get_backend_index(out_snd_device);
                break;
@@ -6396,7 +6399,7 @@ static bool platform_check_codec_backend_cfg(struct audio_device* adev,
      * Handset and speaker may have diffrent backend. Check if the device is speaker or handset,
      * and these devices are restricited to 48kHz.
      */
-    if ((platform_get_backend_index(snd_device) == DEFAULT_CODEC_BACKEND) &&
+    if (!codec_device_supports_native_playback(usecase->devices) &&
         (platform_check_backends_match(SND_DEVICE_OUT_SPEAKER, snd_device) ||
          platform_check_backends_match(SND_DEVICE_OUT_HANDSET, snd_device))) {
         sample_rate = CODEC_BACKEND_DEFAULT_SAMPLE_RATE;

@@ -72,7 +72,7 @@
     </bit_width_configs>
     <pcm_ids>
         <usecase name="USECASE_AUDIO_PLAYBACK_LOW_LATENCY" type="out" id="9"/>
-        <usecase name="USECASE_AUDIO_PLAYBACK_OFFLOAD" type="out" id="7"/>
+        <usecase name="USECASE_AUDIO_PLAYBACK_OFFLOAD" type="out" id="8"/>
         <usecase name="USECASE_AUDIO_PLAYBACK_OFFLOAD2" type="out" id="11"/>
         <usecase name="USECASE_AUDIO_PLAYBACK_OFFLOAD3" type="out" id="12"/>
         <usecase name="USECASE_AUDIO_PLAYBACK_OFFLOAD4" type="out" id="24"/>
@@ -87,9 +87,9 @@
         <usecase name="USECASE_VOWLAN_CALL" type="in" id="-1"/>
         <usecase name="USECASE_VOWLAN_CALL" type="out" id="-1"/>
         <usecase name="USECASE_AUDIO_PLAYBACK_FM" type="out" id="30"/>
-        <usecase name="USECASE_AUDIO_PLAYBACK_FM" type="in" id="32"/>
+        <usecase name="USECASE_AUDIO_PLAYBACK_FM" type="in" id="29"/>
         <usecase name="USECASE_AUDIO_SPKR_CALIB_RX" type="out" id="30"/>
-        <usecase name="USECASE_AUDIO_SPKR_CALIB_TX" type="in" id="33"/>
+        <usecase name="USECASE_AUDIO_SPKR_CALIB_TX" type="in" id="35"/>
         <usecase name="USECASE_AUDIO_PLAYBACK_AFE_PROXY" type="out" id="5"/>
         <usecase name="USECASE_AUDIO_RECORD_AFE_PROXY" type="in" id="6"/>
         <usecase name="USECASE_AUDIO_RECORD_LOW_LATENCY" type="in" id="13" />
@@ -99,7 +99,7 @@
         <usecase name="USECASE_AUDIO_RECORD_VOIP" type="in" id="12" />
         <usecase name="USECASE_AUDIO_PLAYBACK_MMAP" type="out" id="29" />
         <usecase name="USECASE_AUDIO_RECORD_MMAP" type="in" id="29" />
-        <usecase name="USECASE_AUDIO_A2DP_ABR_FEEDBACK" type="in" id="36" />
+        <usecase name="USECASE_AUDIO_A2DP_ABR_FEEDBACK" type="in" id="40" />
         <usecase name="USECASE_INCALL_MUSIC_UPLINK" type="out" id="23" />
     </pcm_ids>
     <config_params>
@@ -209,8 +209,8 @@
         <device name="SND_DEVICE_IN_VOICE_REC_DMIC_FLUENCE" interface="TX_CDC_DMA_TX_3"/>
         <device name="SND_DEVICE_IN_AANC_HANDSET_MIC" interface="TX_CDC_DMA_TX_3"/>
         <device name="SND_DEVICE_IN_QUAD_MIC" interface="TX_CDC_DMA_TX_3"/>
-        <device name="SND_DEVICE_IN_HANDSET_DMIC_STEREO" interface="TX_CDC_DMA_TX_3"/>
-        <device name="SND_DEVICE_IN_SPEAKER_DMIC_STEREO" interface="TX_CDC_DMA_TX_3"/>
+        <device name="SND_DEVICE_IN_HANDSET_STEREO_DMIC" interface="TX_CDC_DMA_TX_3"/>
+        <device name="SND_DEVICE_IN_SPEAKER_STEREO_DMIC" interface="TX_CDC_DMA_TX_3"/>
         <device name="SND_DEVICE_IN_CAPTURE_VI_FEEDBACK" interface="WSA_CDC_DMA_TX_0"/>
         <device name="SND_DEVICE_IN_CAPTURE_VI_FEEDBACK_MONO_1" interface="WSA_CDC_DMA_TX_0"/>
         <device name="SND_DEVICE_IN_CAPTURE_VI_FEEDBACK_MONO_2" interface="WSA_CDC_DMA_TX_0"/>
@@ -423,13 +423,13 @@
                         <mic_info mic_device_id="builtin_mic_4"
                             channel_mapping="AUDIO_MICROPHONE_CHANNEL_MAPPING_PROCESSED"/>
                     </snd_dev>
-                    <snd_dev in_snd_device="SND_DEVICE_IN_HANDSET_DMIC_STEREO">
+                    <snd_dev in_snd_device="SND_DEVICE_IN_HANDSET_STEREO_DMIC">
                         <mic_info mic_device_id="builtin_mic_1"
                             channel_mapping="AUDIO_MICROPHONE_CHANNEL_MAPPING_PROCESSED"/>
                         <mic_info mic_device_id="builtin_mic_2"
                             channel_mapping="AUDIO_MICROPHONE_CHANNEL_MAPPING_PROCESSED"/>
                     </snd_dev>
-                    <snd_dev in_snd_device="SND_DEVICE_IN_SPEAKER_DMIC_STEREO">
+                    <snd_dev in_snd_device="SND_DEVICE_IN_SPEAKER_STEREO_DMIC">
                         <mic_info mic_device_id="builtin_mic_1"
                             channel_mapping="AUDIO_MICROPHONE_CHANNEL_MAPPING_PROCESSED"/>
                         <mic_info mic_device_id="builtin_mic_2"

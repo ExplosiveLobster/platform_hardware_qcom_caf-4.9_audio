@@ -87,7 +87,8 @@
 #if defined (PLATFORM_MSM8998) || (PLATFORM_SDM845) || (PLATFORM_SDM710) || \
     defined (PLATFORM_QCS605) || defined (PLATFORM_MSMNILE) || \
     defined (PLATFORM_KONA) || defined (PLATFORM_MSMSTEPPE) || \
-    defined (PLATFORM_QCS405) || defined (PLATFORM_TRINKET)
+    defined (PLATFORM_QCS405) || defined (PLATFORM_TRINKET) || \
+    defined (PLATFORM_LITO)
 #include <sound/devdep_params.h>
 #endif
 
@@ -342,6 +343,8 @@ struct  spkr_device_chmap {
 static int pcm_device_table[AUDIO_USECASE_MAX][2] = {
     [USECASE_AUDIO_PLAYBACK_DEEP_BUFFER] = {DEEP_BUFFER_PCM_DEVICE,
                                             DEEP_BUFFER_PCM_DEVICE},
+    [USECASE_AUDIO_PLAYBACK_WITH_HAPTICS] = {AUDIO_HAPTICS_PCM_DEVICE,
+                                             AUDIO_HAPTICS_PCM_DEVICE},
     [USECASE_AUDIO_PLAYBACK_LOW_LATENCY] = {LOWLATENCY_PCM_DEVICE,
                                            LOWLATENCY_PCM_DEVICE},
     [USECASE_AUDIO_PLAYBACK_ULL]         = {MULTIMEDIA3_PCM_DEVICE,
@@ -1028,6 +1031,7 @@ static char * hw_interface_table[SND_DEVICE_MAX] = {0};
 
 static struct name_to_index usecase_name_index[AUDIO_USECASE_MAX] = {
     {TO_NAME_INDEX(USECASE_AUDIO_PLAYBACK_DEEP_BUFFER)},
+    {TO_NAME_INDEX(USECASE_AUDIO_PLAYBACK_WITH_HAPTICS)},
     {TO_NAME_INDEX(USECASE_AUDIO_PLAYBACK_LOW_LATENCY)},
     {TO_NAME_INDEX(USECASE_AUDIO_PLAYBACK_HIFI)},
     {TO_NAME_INDEX(USECASE_AUDIO_PLAYBACK_TTS)},
@@ -3410,6 +3414,11 @@ int platform_get_pcm_device_id(audio_usecase_t usecase, int device_type)
     else
         device_id = pcm_device_table[usecase][1];
     return device_id;
+}
+
+int platform_get_haptics_pcm_device_id()
+{
+    return HAPTICS_PCM_DEVICE;
 }
 
 static int find_index(struct name_to_index * table, int32_t len, const char * name)
@@ -6647,6 +6656,7 @@ int64_t platform_render_latency(audio_usecase_t usecase)
         case USECASE_AUDIO_PLAYBACK_DEEP_BUFFER:
             return DEEP_BUFFER_PLATFORM_DELAY;
         case USECASE_AUDIO_PLAYBACK_LOW_LATENCY:
+        case USECASE_AUDIO_PLAYBACK_WITH_HAPTICS:
             return LOW_LATENCY_PLATFORM_DELAY;
         case USECASE_AUDIO_PLAYBACK_OFFLOAD:
         case USECASE_AUDIO_PLAYBACK_OFFLOAD2:
@@ -6816,7 +6826,10 @@ static int platform_get_voice_call_backend(struct audio_device* adev)
    if (voice_is_in_call(adev) || adev->mode == AUDIO_MODE_IN_COMMUNICATION) {
        list_for_each(node, &adev->usecase_list) {
            uc =  node_to_item(node, struct audio_usecase, list);
-           if (uc && (uc->type == VOICE_CALL || uc->type == VOIP_CALL) && uc->stream.out) {
+           if (uc && uc->stream.out &&
+               (uc->type == VOICE_CALL ||
+                uc->type == VOIP_CALL ||
+                uc->id == USECASE_AUDIO_PLAYBACK_VOIP)) {
                out_snd_device = platform_get_output_snd_device(adev->platform, uc->stream.out);
                backend_idx = platform_get_backend_index(out_snd_device);
                break;
@@ -7370,7 +7383,9 @@ static bool platform_check_codec_backend_cfg(struct audio_device* adev,
      * Handset and speaker may have diffrent backend. Check if the device is speaker or handset,
      * and these devices are restricited to 48kHz.
      */
-    if (platform_check_backends_match(SND_DEVICE_OUT_SPEAKER, snd_device)) {
+    if (!codec_device_supports_native_playback(usecase->devices) &&
+        (platform_check_backends_match(SND_DEVICE_OUT_SPEAKER, snd_device) ||
+         platform_check_backends_match(SND_DEVICE_OUT_HANDSET, snd_device))) {
         int bw = platform_get_snd_device_bit_width(SND_DEVICE_OUT_SPEAKER);
         if ((-ENOSYS != bw) && (bit_width > (uint32_t)bw)) {
             bit_width = (uint32_t)bw;
@@ -9324,7 +9339,8 @@ int platform_get_supported_copp_sampling_rate(uint32_t stream_sr)
 #if defined (PLATFORM_MSM8998) || (PLATFORM_SDM845) || (PLATFORM_SDM710) || \
     defined (PLATFORM_QCS605) || defined (PLATFORM_MSMNILE) || \
     defined (PLATFORM_KONA) || defined (PLATFORM_MSMSTEPPE) || \
-    defined (PLATFORM_QCS405) || defined (PLATFORM_TRINKET)
+    defined (PLATFORM_QCS405) || defined (PLATFORM_TRINKET) || \
+    defined (PLATFORM_LITO)
 int platform_get_mmap_data_fd(void *platform, int fe_dev, int dir, int *fd,
                               uint32_t *size)
 {
