@@ -252,7 +252,8 @@ bool audio_extn_is_wsa_enabled();
 
 //START: AFE_PROXY_FEATURE
 int32_t audio_extn_set_afe_proxy_channel_mixer(struct audio_device *adev,
-                                               int channel_count);
+                                                    int channel_count,
+                                                    snd_device_t snd_device);
 int32_t audio_extn_read_afe_proxy_channel_masks(struct stream_out *out);
 int32_t audio_extn_get_afe_proxy_channel_count();
 //END: AFE_PROXY_FEATURE
@@ -762,6 +763,7 @@ bool audio_extn_utils_is_dolby_format(audio_format_t format);
 int audio_extn_utils_get_bit_width_from_string(const char *);
 int audio_extn_utils_get_sample_rate_from_string(const char *);
 int audio_extn_utils_get_channels_from_string(const char *);
+void audio_extn_utils_release_snd_device(snd_device_t snd_device);
 
 #ifdef DS2_DOLBY_DAP_ENABLED
 #define LIB_DS2_DAP_HAL "vendor/lib/libhwdaphal.so"
@@ -1205,4 +1207,7 @@ void audio_extn_send_dual_mono_mixing_coefficients(struct stream_out *out);
 void audio_extn_set_cpu_affinity();
 bool audio_extn_is_record_play_concurrency_enabled();
 bool audio_extn_is_concurrent_capture_enabled();
+void audio_extn_set_custom_mtmx_params(struct audio_device *adev,
+                                        struct audio_usecase *usecase,
+                                        bool enable);
 #endif /* AUDIO_EXTN_H */

@@ -409,8 +409,8 @@ int voice_check_and_set_incall_rec_usecase(struct audio_device *adev,
         session_id = voice_get_active_session_id(adev);
         ret = platform_set_incall_recording_session_id(adev->platform,
                                                        session_id, rec_mode);
-        ret = platform_set_incall_recording_session_channels(adev->platform,
-                                                        in->config.channels);
+        platform_set_incall_recording_session_channels(adev->platform,
+                                                       in->config.channels);
         ALOGV("%s: Update usecase to %d",__func__, in->usecase);
     } else {
         /*
@@ -449,6 +449,11 @@ int voice_check_and_stop_incall_rec_usecase(struct audio_device *adev,
 snd_device_t voice_get_incall_rec_backend_device(struct stream_in *in)
 {
    snd_device_t incall_record_device = {0};
+
+    if (!in) {
+       ALOGE("%s: input stream is NULL", __func__);
+       return 0;
+    }
 
    switch(in->source) {
     case AUDIO_SOURCE_VOICE_UPLINK:
