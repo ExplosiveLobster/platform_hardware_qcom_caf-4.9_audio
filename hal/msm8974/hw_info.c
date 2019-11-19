@@ -866,6 +866,15 @@ static void update_hardware_info_msm8952(struct hardware_info *hw_info, const ch
     }
 }
 
+static void update_hardware_info_msm8976(struct hardware_info *hw_info, const char *snd_card_name)
+{
+    if (!strcmp(snd_card_name, "msm8976-tasha-snd-card")) {
+        strlcpy(hw_info->name, "msm8952", sizeof(hw_info->name));
+    } else {
+        ALOGW("%s: Not an MSM8956/76 device", __func__);
+    }
+}
+
 void *hw_info_init(const char *snd_card_name)
 {
     struct hardware_info *hw_info;
@@ -950,6 +959,9 @@ void *hw_info_init(const char *snd_card_name)
     } else if (strstr(snd_card_name, "msm8952")) {
         ALOGV("MSM8952 - variant soundcard");
         update_hardware_info_msm8952(hw_info, snd_card_name);
+    } else if(strstr(snd_card_name, "msm8976")) {
+        ALOGV("MSM8956/76 - variant soundcard");
+        update_hardware_info_msm8976(hw_info, snd_card_name);
     } else {
         ALOGE("%s: Unsupported target %s:",__func__, snd_card_name);
         free(hw_info);
